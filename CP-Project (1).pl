@@ -1,31 +1,15 @@
 :- use_module(library(clpfd)).
 
 %teach(Type, StaffMember, Group, Tut, Major, FirstYear, Subject, Hall, Slot).
-%Hall is 0 if the type not a lecture.
-%let's assume that the Halls from 1 to 10 are small halls, and from 11 to 16 are large halls.
 %staff(Name, OccSlots, DaysOff).
+%Hall is 0 if the type not a lecture.
 
-%ava(LargeHalls, smallHalls, Rooms, Labs,Slot).
+%ava(LargeHalls, smallHalls, Rooms, Labs).
 
- ava(0, 0, 0,0,0).
- ava(10, 5, 10,5,1).
- ava(10, 5, 10,5,2).
- ava(10, 5, 10,5,3).
- ava(10, 5, 10,5,4).
- ava(10, 5, 10,5,5).
- ava(10, 5, 10,5,6).
- ava(10, 5, 10,5,7).
- ava(10, 5, 10,5,8).
- ava(10, 5, 10,5,9).
- ava(10, 5, 10,5,10).
- ava(10, 5, 10,5,11).
- ava(10, 5, 10,5,12).
- ava(10, 5, 10,5,13).
- ava(10, 5, 10,5,14).
+ava(0,0,0,0).
 
 
-
-
+staff('H',[1,2,3,4,5],[1,2]).
 
 teach(0,'H',2,3,e,0,'math',1,0).
 teach(0,'Z',2,3,e,0,'math',3,0).
@@ -46,15 +30,12 @@ teach(2,'H',2,5,e,0,'math',0,10).
 teach(2,'H',2,5,e,0,'math',0,11).
 teach(2,'H',2,5,e,0,'math',0,12).
 teach(2,'H',2,5,e,0,'math',0,13).
-teach(2,'H',2,6,e,0,'math',0,14).
+teach(3,'H',2,6,e,0,'math',0,14).
 
-
-
-getCommonFreeSlots(staff(_,OccSlots,_), Group, Tut, L) :-
-    findall(Slots,teach(3,_,Group,Tut,_,_,_,Slots),FreeSlots),
-     % getFreeSlotsTut(Group,Tut, Schedule, FreeSlots),
-    bagof(Slot,Slot^(member(Slot,FreeSlots), \+ member(Slot,OccSlots)),CS),
-    sort(CS,L).
+compensate([],_,[]).
+compensate([teach(Type, StaffMember, Group, Tut, Major, FirstYear, Subject, Hall, Slot)|T], DaysOff, [CommonSlots|R]):-
+    getCommonFreeSlots(StaffMember, Group, Tut, CommonSlots),
+    compensate(T,DaysOff,R).
 
 % ==================================Group Predicates==================================
 getTutsInGroup(Group, L, R):-
@@ -68,8 +49,19 @@ getTutsInGroupHelper(Group, [_|T], L) :-
     getTutsInGroupHelper(Group, T, L).
 
 
-
+labeling([],R).
 % ==================================Tutorial Predicates==================================
+getCommonFreeSlots(StaffMember, Group, Tut, CommonSlots) :-
+    staff(StaffMember,OccSlots,_),
+    findall(Slots,teach(3,_,Group,Tut,_,_,_,_,Slots),FreeSlots),
+    element(_,FreeSlots,CommonSlots),
+    element(_,OccSlots,StaffSlots),
+    CommonSlots #\= StaffSlots.
+
+    %getFreeSlotsTut(Group,Tut, Schedule, FreeSlots),
+    %getUncommonElements(FreeSlots, OccSlots, CommonSlots),
+    %bagof(Slots, Slots^(element(_,FreeSlots,Slots), element(_,OccSlots,X), Slots#=X), CommonSlots),
+    %sort(CommonSlots, L).
 
 getTutorialGroupTuts(Group, Tut, L):-
     bagof(teach(X,St,Group,Tut,Mj,Fy,Sb,Slots),X^(teach(X,St,Group,Tut,Mj,Fy,Sb,Slots)),L).
