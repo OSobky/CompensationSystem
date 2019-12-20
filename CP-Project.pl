@@ -9,7 +9,7 @@
 ava(20,20,30,20).
 
 
-staff('H',[1,2,3,4,5],[1,2]).
+staff('H',[1,2,3,4,5,6],[1,2]).
 staff('Z',[1,2,3,4,5],[1,2]).
 staff('F',[1,2,3,4,5],[1,2]).
 staff('J',[1,2,3,4,5],[1,2]).
@@ -46,12 +46,12 @@ teach(3,'H',2,6,e,0,'math',0,14).
 
 % ==================================
 compansate(TutsToComp, SlotsDomain):-
-    %setof(teach(X,St,Group,Tut,Mj,Fy,Sb,Hall,Slots),(teach(X,St,Group,Tut,Mj,Fy,Sb,Hall,Slots), X #= 3 ),Teach),
-    slotsDomains(TutsToComp, _, SlotsDomain).
-    %generateTeachFromLists(TutsToComp, SlotsDomain, NewTeach),
-    %checkTutSlotConstraint(NewTeach).
-    %append(Teach, NewTeach, AllTeach),
-    %roomConstraint(0,AllTeach).
+    setof(teach(X,St,Group,Tut,Mj,Fy,Sb,Hall,Slots),(teach(X,St,Group,Tut,Mj,Fy,Sb,Hall,Slots), X #= 3 ),Teach),
+    slotsDomains(TutsToComp, _, SlotsDomain),
+    generateTeachFromLists(TutsToComp, SlotsDomain, NewTeach),
+    checkTutSlotConstraint(NewTeach),
+    append(Teach, NewTeach, AllTeach),
+    roomConstraint(0,AllTeach).
 
 % ==================================
 roomConstraint(30, _) :- !.
@@ -112,7 +112,7 @@ tutSlots(Group, Tut, [_|L], S):-
 % Sets The Possible Slot Domain For Any Tutorial Needs Compansation. 
 slotsDomains([],_,[]).
 slotsDomains([teach(Type, StaffMember, Group, Tut, Major, FirstYear, Subject, Hall, Slot)|T], DaysOff, [CommonSlots|R]):-
-    getCommonFreeSlots(StaffMember, Group, Tut, CommonSlots),
+    getCommonFreeSlots(StaffMember, Group, Tut, CommonSlots), 
     slotsDomains(T,DaysOff,R).
 
 % ==================================
