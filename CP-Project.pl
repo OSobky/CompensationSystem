@@ -121,6 +121,70 @@ generateTeachFromLists([],_,[]).
 generateTeachFromLists([teach(Type, StaffMember, Group, Tut, Major, FirstYear, Subject, Hall, Slot)|T],[NewSlot|S], [teach(Type, StaffMember, Group, Tut, Major, FirstYear, Subject, Hall, NewSlot)|L]) :-
     generateTeachFromLists(T,S,L).
 
+%=====================================================================================
+% Predicate to get number of Rooms, Labs, Large Halls and Small Halls in a givin slot
+getResources(Slot, Teach, LargeHalls, SmallHalls, Rooms, Labs) :-
+                    getLargeHalls(Slot, Teach, LH),
+                    getSmallHalls(Slot, Teach, SH),
+                    getRooms(Slot, Teach, R),
+                    getLabs(Slot, Teach, L),
+                    sort(LH, Large),
+                    sort(SH, Small),
+                    sort(R, Ro),
+                    sort(L, La),
+                    length(Large, LargeHalls),
+                    length(Small, SmallHalls),
+                    length(Ro, Rooms),
+                    length(La, Labs).
+
+
+
+
+ %V = [teach(2,'H',2,3,e,0,'math',0,0),teach(2,'F',2,3,e,0,'math',0,B),teach(2,'S',2,3,e,0,'math',0,C)] , B in 0 .. 1, C in 0 .. 1,
+
+
+getLargeHalls(_, [], []).
+getLargeHalls(Slot, [teach(0,Staff,_,_,_,_,_,LargeHallNum,Slot)|L], [Staff|T]) :-
+    LargeHallNum #> 10,
+    !,
+    getLargeHalls(Slot, L, T).
+getLargeHalls(Slot, [_|L], T) :-
+    getLargeHalls(Slot, L, T).
+
+getSmallHalls(_, [], []).
+getSmallHalls(Slot, [teach(0,Staff,_,_,_,_,_,SmallHallNum,Slot)|L], [Staff|T]) :-
+    SmallHallNum #< 11,
+    !,
+    getSmallHalls(Slot, L, T).
+getSmallHalls(Slot, [_|L], T) :-
+    getSmallHalls(Slot, L, T).
+
+getRooms(_, [], []).
+getRooms(Slot, [teach(1,Staff,_,_,_,_,_,_,Slot)|L], [Staff|T]) :-
+    !,
+    getRooms(Slot, L, T).
+getRooms(Slot, [_|L], T) :-
+    getRooms(Slot, L, T).
+
+getLabs(_, [], []).
+getLabs(Slot, [teach(2,Staff,_,_,_,_,_,_,Slot)|L], [Staff|T]) :-
+    !,
+    getLabs(Slot, L, T).
+getLabs(Slot, [_|L], T) :-
+    getLabs(Slot, L, T).
+
+%=====================================================================================
+%Predicate to check if there is available space for the companseted teach activity
+%teach(Type, StaffMember, Group, Tut, Major, FirstYear, Subject, Hall, Slot).
+%ava(LargeHalls, SmallHalls, Rooms, Labs,Slot).
+
+checkSpace(Type, Teach, Slot, SmallorLarge):-
+                      Type = 0, SmallorLarge = 0, ava(_,SmallHalls,_,_),  getResources(Slot, Teach, _, SH, _, _),SmallHalls #>= SH ;
+                      Type = 0, SmallorLarge = 1, ava(LargeHalls,_,_,_),  getResources(Slot, Teach, LH, _, _, _),LargeHalls #>= LH ;
+                      Type = 1, ava(_,_, Rooms,_),  getResources(Slot, Teach, _, _, R, _), Rooms #>= R  ;
+                      Type = 2, ava(_,_,_,Labs),  getResources(Slot, Teach, _, _, _, L),Labs #>= L.
+
+
 % ==================================Group Predicates==================================
 
 % Finds The Tutorials In Group In A List Of teach() L.
@@ -205,90 +269,6 @@ days([],[]).
 days([H|T],[DH|DT]) :-  
     DH #= div(H,5),
         days(T,DT).
-
-%=====================================================================================
-% Predicate to get number of Rooms, Labs, Large Halls and Small Halls in a givin slot
-getResources(Slot, Teach, LargeHalls, SmallHalls, Rooms, Labs) :-
-                    getLargeHalls(Slot, Teach, LH),
-                    getSmallHalls(Slot, Teach, SH),
-                    getRooms(Slot, Teach, R),
-                    getLabs(Slot, Teach, L),
-                    sort(LH, Large),
-                    sort(SH, Small),
-                    sort(R, Ro),
-                    sort(L, La),
-                    length(Large, LargeHalls),
-                    length(Small, SmallHalls),
-                    length(Ro, Rooms),
-                    length(La, Labs).
-
-
-
-
- %V = [teach(2,'H',2,3,e,0,'math',0,0),teach(2,'F',2,3,e,0,'math',0,B),teach(2,'S',2,3,e,0,'math',0,C)] , B in 0 .. 1, C in 0 .. 1,
-
-
-getLargeHalls(_, [], []).
-getLargeHalls(Slot, [teach(0,Staff,_,_,_,_,_,LargeHallNum,Slot)|L], [Staff|T]) :-
-    LargeHallNum #> 10,
-    !,
-    getLargeHalls(Slot, L, T).
-getLargeHalls(Slot, [_|L], T) :-
-    getLargeHalls(Slot, L, T).
-
-getSmallHalls(_, [], []).
-getSmallHalls(Slot, [teach(0,Staff,_,_,_,_,_,SmallHallNum,Slot)|L], [Staff|T]) :-
-    SmallHallNum #< 11,
-    !,
-    getSmallHalls(Slot, L, T).
-getSmallHalls(Slot, [_|L], T) :-
-    getSmallHalls(Slot, L, T).
-
-getRooms(_, [], []).
-getRooms(Slot, [teach(1,Staff,_,_,_,_,_,_,Slot)|L], [Staff|T]) :-
-    !,
-    getRooms(Slot, L, T).
-getRooms(Slot, [_|L], T) :-
-    getRooms(Slot, L, T).
-
-getLabs(_, [], []).
-getLabs(Slot, [teach(2,Staff,_,_,_,_,_,_,Slot)|L], [Staff|T]) :-
-    !,
-    getLabs(Slot, L, T).
-getLabs(Slot, [_|L], T) :-
-    getLabs(Slot, L, T).
-
-
-
-%=====================================================================================
-%Predicate to check if there is available space for the companseted teach activity
-%teach(Type, StaffMember, Group, Tut, Major, FirstYear, Subject, Hall, Slot).
-%ava(LargeHalls, SmallHalls, Rooms, Labs,Slot).
-
-checkSpace(Type, Teach, Slot, SmallorLarge):-
-                      Type = 0, SmallorLarge = 0, ava(_,SmallHalls,_,_),  getResources(Slot, Teach, _, SH, _, _),SmallHalls #>= SH ;
-                      Type = 0, SmallorLarge = 1, ava(LargeHalls,_,_,_),  getResources(Slot, Teach, LH, _, _, _),LargeHalls #>= LH ;
-                      Type = 1, ava(_,_, Rooms,_),  getResources(Slot, Teach, _, _, R, _), Rooms #>= R  ;
-                      Type = 2, ava(_,_,_,Labs),  getResources(Slot, Teach, _, _, _, L),Labs #>= L.
-
-
-rooms(Vs, Bs) :-
-
-        maplist(eq_b, Vs, Bs).
-
-eq_b(X,B) :- 
-            write(X),
-            checkSpace(1,X,_),
-            !, 
-            B #= 1 .
-eq_b(_,B) :-
-            B #= 0.
-
-
-
-
-
-
 
 %=====================================================================================
 % Predicates that might be useful.
