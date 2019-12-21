@@ -9,7 +9,7 @@
 ava(20,20,30,20).
 
 
-staff('H',[1,2,3,4,5,6],[1,2]).
+staff('H',[1,2,3,4,5],[1,2]).
 staff('Z',[1,2,3,4,5],[1,2]).
 staff('F',[1,2,3,4,5],[1,2]).
 staff('J',[1,2,3,4,5],[1,2]).
@@ -38,27 +38,29 @@ teach(2,'H',2,5,e,0,'math',0,13).
 teach(3,'H',2,6,e,0,'math',0,14).
 
 
-% [teach(3,'H',2,3,e,0,'math',0,0),teach(0,'Z',2,3,e,0,'math',3,0),teach(1,'F',2,3,e,0,'math',0,0),(2,'H',2,3,e,0,'math',0,0),teach(1,'H',2,5,e,0,'math',0,1),teach(1,'H',2,6,e,0,'math',0,1),teach(1,'H',2,6,e,0,'math',0,1),teach(3,'H',2,5,e,0,'math',0,2),teach(1,'H',2,5,e,0,'math',0,3),teach(3,'H',2,5,e,0,'math',0,4),teach(3,'H',2,5,e,0,'math',0,5),teach(3,'H',2,5,e,0,'math',0,6),teach(3,'H',2,5,e,0,'math',0,7),teach(3,'H',2,5,e,0,'math',0,8),teach(3,'H',2,5,e,0,'math',0,9),teach(2,'H',2,5,e,0,'math',0,10),teach(2,'H',2,5,e,0,'math',0,11),teach(2,'H',2,5,e,0,'math',0,12),teach(2,'H',2,5,e,0,'math',0,13),teach(3,'H',2,6,e,0,'math',0,14)]
+% [teach(3,'H',2,3,e,0,'math',0,0),teach(0,'Z',2,3,e,0,'math',3,0),teach(1,'F',2,3,e,0,'math',0,0),(2,'H',2,3,e,0,'math',0,0),teach(1,'H',2,5,e,0,'math',0,1),teach(1,'Z',2,6,e,0,'math',0,1),teach(1,'H',2,6,e,0,'math',0,1),teach(3,'H',2,5,e,0,'math',0,2),teach(1,'H',2,5,e,0,'math',0,3),teach(3,'H',2,5,e,0,'math',0,4),teach(3,'H',2,5,e,0,'math',0,5),teach(3,'H',2,5,e,0,'math',0,6),teach(3,'H',2,5,e,0,'math',0,7),teach(3,'H',2,5,e,0,'math',0,8),teach(3,'H',2,5,e,0,'math',0,9),teach(2,'H',2,5,e,0,'math',0,10),teach(2,'H',2,5,e,0,'math',0,11),teach(2,'H',2,5,e,0,'math',0,12),teach(2,'H',2,5,e,0,'math',0,13),teach(3,'H',2,6,e,0,'math',0,14)]
     
 %setof(teach(X,St,Group,Tut,Mj,Fy,Sb,Hall,Slots),teach(X,St,Group,Tut,Mj,Fy,Sb,Hall,Slots),Teach),
 %bagof(staff(Name, OccSlots, DaysOff),staff(Name, OccSlots, DaysOff),S),
 %getTutsAndGroups(TutsToComp, Groups, Tuts),
 
 % ==================================
-compansate(TutsToComp, SlotsDomain):-
-    setof(teach(X,St,Group,Tut,Mj,Fy,Sb,Hall,Slots),(teach(X,St,Group,Tut,Mj,Fy,Sb,Hall,Slots), X #= 3 ),Teach),
+compansate(TutsToComp, DaysOff, SlotsDomain):-
+    setof(teach(X,St,Group,Tut,Mj,Fy,Sb,Hall,Slots),(teach(X,St,Group,Tut,Mj,Fy,Sb,Hall,Slots), day(X,DX), element(_,DaysOff, DO), DX #\= DO, X #\= 3 ),Teach),
     slotsDomains(TutsToComp, _, SlotsDomain),
     generateTeachFromLists(TutsToComp, SlotsDomain, NewTeach),
     checkTutSlotConstraint(NewTeach),
     append(Teach, NewTeach, AllTeach),
-    roomConstraint(0,AllTeach).
+    roomConstraint(0,AllTeach),
+    write(NewTeach).
 
 % ==================================
-roomConstraint(30, _) :- !.
+roomConstraint(30, _):- !.
 roomConstraint(Counter, AllTeach) :-
-    checkSpace(0, AllTeach, Counter, _),
-    checkSpace(1, AllTeach, Counter, _),
-    checkSpace(2, AllTeach, Counter, _),
+    checkSpace(0, AllTeach, Counter),
+    checkSpace(1, AllTeach, Counter),
+    checkSpace(2, AllTeach, Counter),
+    write(Counter),
     NewCounter #= Counter + 1,
     roomConstraint(NewCounter, AllTeach).
 
@@ -118,7 +120,7 @@ slotsDomains([teach(Type, StaffMember, Group, Tut, Major, FirstYear, Subject, Ha
 % ==================================
 % Generates A List Of "teach(..,..,..)" & Adds A Slots Variable With Its Domain Already Set.
 generateTeachFromLists([],_,[]).
-generateTeachFromLists([teach(Type, StaffMember, Group, Tut, Major, FirstYear, Subject, Hall, Slot)|T],[NewSlot|S], [teach(Type, StaffMember, Group, Tut, Major, FirstYear, Subject, Hall, NewSlot)|L]) :-
+generateTeachFromLists([teach(Type, StaffMember, Group, Tut, Major, FirstYear, Subject, Hall, _)|T],[NewSlot|S], [teach(Type, StaffMember, Group, Tut, Major, FirstYear, Subject, Hall, NewSlot)|L]) :-
     generateTeachFromLists(T,S,L).
 
 %=====================================================================================
@@ -136,12 +138,6 @@ getResources(Slot, Teach, LargeHalls, SmallHalls, Rooms, Labs) :-
                     length(Small, SmallHalls),
                     length(Ro, Rooms),
                     length(La, Labs).
-
-
-
-
- %V = [teach(2,'H',2,3,e,0,'math',0,0),teach(2,'F',2,3,e,0,'math',0,B),teach(2,'S',2,3,e,0,'math',0,C)] , B in 0 .. 1, C in 0 .. 1,
-
 
 getLargeHalls(_, [], []).
 getLargeHalls(Slot, [teach(0,Staff,_,_,_,_,_,LargeHallNum,Slot)|L], [Staff|T]) :-
@@ -175,14 +171,11 @@ getLabs(Slot, [_|L], T) :-
 
 %=====================================================================================
 %Predicate to check if there is available space for the companseted teach activity
-%teach(Type, StaffMember, Group, Tut, Major, FirstYear, Subject, Hall, Slot).
-%ava(LargeHalls, SmallHalls, Rooms, Labs,Slot).
-
-checkSpace(Type, Teach, Slot, SmallorLarge):-
-                      Type = 0, SmallorLarge = 0, ava(_,SmallHalls,_,_),  getResources(Slot, Teach, _, SH, _, _),SmallHalls #>= SH ;
-                      Type = 0, SmallorLarge = 1, ava(LargeHalls,_,_,_),  getResources(Slot, Teach, LH, _, _, _),LargeHalls #>= LH ;
+checkSpace(Type, Teach, Slot):-
+                      Type = 0, ava(_,SmallHalls,_,_),  getResources(Slot, Teach, _, SH, _, _), SmallHalls #>= SH ;
+                      Type = 0, ava(LargeHalls,_,_,_),  getResources(Slot, Teach, LH, _, _, _), LargeHalls #>= LH ;
                       Type = 1, ava(_,_, Rooms,_),  getResources(Slot, Teach, _, _, R, _), Rooms #>= R  ;
-                      Type = 2, ava(_,_,_,Labs),  getResources(Slot, Teach, _, _, _, L),Labs #>= L.
+                      Type = 2, ava(_,_,_,Labs),  getResources(Slot, Teach, _, _, _, L), Labs #>= L.
 
 
 % ==================================Group Predicates==================================
@@ -192,9 +185,9 @@ getTutsInGroup(Group, L, R):-
     getTutsInGroupHelper(Group, L, D), !,
     sort(D,R).
 
-getTutsInGroupHelper(_, [], []).
 getTutsInGroupHelper(Group, [teach(_,_,Group,Tut,_,_,_,_)|T], [Tut|L]):-
     getTutsInGroupHelper(Group, T, L).
+getTutsInGroupHelper(_, [], []).
 getTutsInGroupHelper(Group, [_|T], L) :-
     getTutsInGroupHelper(Group, T, L).
 
@@ -205,11 +198,6 @@ getCommonFreeSlots(StaffMember, Group, Tut, CommonSlots) :-
     subtract(FreeSlots, OccSlots, CommonFree),
     element(_,CommonFree,CommonSlots).
 
-    %getFreeSlotsTut(Group,Tut, Schedule, FreeSlots),
-    %getUncommonElements(FreeSlots, OccSlots, CommonSlots),
-    %bagof(Slots, Slots^(element(_,FreeSlots,Slots), element(_,OccSlots,X), Slots#=X), CommonSlots),
-    %sort(CommonSlots, L).
-
 % ==================================
 getTutorialGroupTuts(Group, Tut, L):-
     bagof(teach(X,St,Group,Tut,Mj,Fy,Sb,Hall,Slots),X^(teach(X,St,Group,Tut,Mj,Fy,Sb,Hall,Slots), X #\= 3),L).
@@ -217,7 +205,7 @@ getTutorialGroupTuts(Group, Tut, L):-
 % ==================================
 getTutorialGroupWorkSlots(_,_,[],[]).
 getTutorialGroupWorkSlots(Group, Tut, [teach(X,_,Group,Tut,_,_,_,Slot)|T], [Slot|L]):-
-    X #< 3,
+    X #\= 3,
     getTutorialGroupWorkSlots(Group, Tut, T, L).
 getTutorialGroupWorkSlots(Group, Tut, [_|T], L):-
     getTutorialGroupWorkSlots(Group, Tut, T, L).
@@ -269,6 +257,9 @@ days([],[]).
 days([H|T],[DH|DT]) :-  
     DH #= div(H,5),
         days(T,DT).
+
+day(H, DH) :-
+    DH #= div(H,5).
 
 %=====================================================================================
 % Predicates that might be useful.
