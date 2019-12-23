@@ -5,17 +5,17 @@
 %Hall is 0 if the type not a lecture.
 %ava(LargeHalls, smallHalls, Rooms, Labs).
 
-ava(5,5,3,4).
+ava(5,5,2,2).
 
 staff('H',[1,2,3,4,5],[4,5]).
 staff('Z',[1,2,3,4,5],[4,5]).
 staff('F',[1,2,3,4,5],[4,5]).
 staff('J',[1,2,3,4,5],[4,5]).
 
-teach(3,'H',2,3,e,0,'math',0,14).
+teach(3,'H',2,3,e,0,'math',0,11).
 teach(0,'Z',2,3,e,0,'math',3,1).
 teach(1,'H',2,3,e,0,'math',0,2).
-teach(2,'Z',2,3,e,0,'math',0,10).
+teach(1,'Z',2,3,e,0,'math',0,10).
 
 teach(1,'Z',2,5,e,0,'math',0,2).
 teach(1,'H',2,5,e,0,'math',0,1).
@@ -24,7 +24,7 @@ teach(1,'H',2,5,e,0,'math',0,3).
 
 teach(3,'H',2,5,e,0,'math',0,4).
 teach(3,'H',2,5,e,0,'math',0,5).
-teach(3,'H',2,5,e,0,'math',0,6).
+teach(3,'5',2,5,e,0,'math',0,6).
 teach(3,'H',2,5,e,0,'math',0,7).
 teach(3,'H',2,5,e,0,'math',0,8).
 teach(3,'H',2,5,e,0,'math',0,9).
@@ -35,35 +35,111 @@ teach(2,'H',2,5,e,0,'math',0,12).
 teach(2,'H',2,5,e,0,'math',0,13).
 
 teach(1,'H',2,6,e,0,'math',0,1).
-teach(1,'J',2,6,e,0,'math',0,2).
-teach(2,'J',2,6,e,0,'math',0,10).
+teach(1,'H',2,6,e,0,'math',0,2).
+teach(1,'H',2,6,e,0,'math',0,10).
 teach(3,'H',2,6,e,0,'math',0,11).
 
 % ==================================
-compansate(DaysOff, FinalTeach):-
+compansate(DaysOff, SlotsDomain):-
     findCompTeach(DaysOff, TutsToComp),
+    findall(Staff,staff(Staff,_,_), StaffMembers),
     setof(teach(X,St,Group,Tut,Mj,Fy,Sb,Hall,Slots),(teach(X,St,Group,Tut,Mj,Fy,Sb,Hall,Slots), day(Slots,DX), element(_,DaysOff, DO), DX #\= DO, X #\= 3 ),Teach),
+
     slotsDomains(TutsToComp, DaysOff, SlotsDomain),
     generateTeachFromLists(TutsToComp, SlotsDomain, NewTeach),
     checkTutSlotConstraint(NewTeach, DaysOff),
     append(Teach, NewTeach, AllTeach),
-    roomConstraint(0,AllTeach),
-    setof(teach(X,St,Group,Tut,Mj,Fy,Sb,Hall,Slots),(teach(X,St,Group,Tut,Mj,Fy,Sb,Hall,Slots), day(Slots,DX), element(_,DaysOff, DO), DX #\= DO, element(_,SlotsDomain,SD), DX #\= SD, X #= 3 ), FreeTeach),
-    append(AllTeach, FreeTeach, FinalTeach),
+    roomConstraint(AllTeach),
+    %staffConstraint(StaffMembers, AllTeach),
+
+    %setof(teach(X,St,Group,Tut,Mj,Fy,Sb,Hall,Slots),(teach(X,St,Group,Tut,Mj,Fy,Sb,Hall,Slots), day(Slots,DX), element(_,DaysOff, DO), DX #\= DO, element(_,SlotsDomain,SD), DX #\= SD, X #= 3 ), FreeTeach),
+    %append(AllTeach, FreeTeach, FinalTeach),
+
     labeling([], SlotsDomain).
 
 % ==================================
-roomConstraint(30, _) :- !.
-roomConstraint(Counter, AllTeach) :-
-    checkSpace(0, AllTeach, Counter),
-    checkSpace(1, AllTeach, Counter),
-    checkSpace(2, AllTeach, Counter),
-    NewCounter #= Counter + 1,
-    roomConstraint(NewCounter, AllTeach).
+roomConstraint(AllTeach):-
+    ava(LargeHalls, SmallHalls, Rooms, Labs),
+    
+    rTaskCreation(AllTeach,RTasks),  
+    shTaskCreation(AllTeach,SHTasks),
+    lhTaskCreation(AllTeach,LHTasks), 
+    lTaskCreation(AllTeach,LTasks),  
+
+    cumulative(RTasks, [limit(Rooms)]),
+    !,
+    cumulative(SHTasks, [limit(SmallHalls)]),
+    cumulative(LHTasks, [limit(LargeHalls)]),
+    cumulative(LTasks, [limit(Labs)]).
+
+
+roomConstraint(AllTeach):-
+    ava(LargeHalls, SmallHalls, Rooms, Labs),
+    
+    shTaskCreation(AllTeach,SHTasks),
+    lhTaskCreation(AllTeach,LHTasks), 
+    rTaskCreation(AllTeach,RTasks),
+    lTaskCreation(AllTeach,LTasks), 
+
+    append(RTasks, LTasks, LRTasks),
+    LR #= Rooms + Labs, 
+
+    cumulative(SHTasks, [limit(SmallHalls)]),
+    cumulative(LHTasks, [limit(LargeHalls)]),
+    cumulative(LRTasks, [limit(LR)]).
+
+
+shTaskCreation([],[]).
+shTaskCreation([H|T], [RH|RT]):-
+    H = teach(0, StaffMember, Group, Tut, Major, FirstYear, Subject, Hall, Slot), Hall #=< 10,
+    shTaskCreation(T,RT),
+    RH = task(Slot,1,_,1,_),!.
+shTaskCreation([_|T], RT):-
+    shTaskCreation(T,RT).
+
+
+lhTaskCreation([],[]).
+lhTaskCreation([H|T], [RH|RT]):-
+    H = teach(0, StaffMember, Group, Tut, Major, FirstYear, Subject, Hall, Slot), Hall #> 10,
+    lhTaskCreation(T,RT),
+    RH = task(Slot,1,_,1,_),!.
+lhTaskCreation([_|T], RT):-
+    lhTaskCreation(T,RT).
+
+rTaskCreation([],[]).
+rTaskCreation([H|T], [RH|RT]):-
+    H = teach(1, StaffMember, Group, Tut, Major, FirstYear, Subject, Hall, Slot),
+    rTaskCreation(T,RT),
+    RH = task(Slot,1,_,1,_),!.
+rTaskCreation([_|T], RT):-
+    rTaskCreation(T,RT).
+
+lTaskCreation([],[]).
+lTaskCreation([H|T], [RH|RT]):-
+    H = teach(2, StaffMember, Group, Tut, Major, FirstYear, Subject, Hall, Slot),
+    lTaskCreation(T,RT),
+    RH = task(Slot,1,_,1,_),!.
+lTaskCreation([_|T], RT):-
+    lTaskCreation(T,RT).
+
 % ==================================
 findCompTeach(DaysOff, CompTeach) :-
     bagof(teach(X,St,Group,Tut,Mj,Fy,Sb,Hall,Slots),X^Slots^(teach(X,St,Group,Tut,Mj,Fy,Sb,Hall,Slots),element(_, DaysOff, DayOff), day(Slots, SlotDay), SlotDay #= DayOff, X #\= 3),CompTeach), !.
 findCompTeach(_, []).
+
+% ==================================
+staffConstraint([], _).
+staffConstraint([StaffName|T], AllTeach) :-
+    getMemberSlots(StaffName, AllTeach, MemberSlots),
+    all_distinct(MemberSlots),
+    staffConstraint(T, AllTeach).
+
+getMemberSlots(_, [], []).
+getMemberSlots(StaffName, [teach(_,StaffName,_,_,_,_,_,_,Slot)|T], [Slot|L]) :-
+    !,
+    getMemberSlots(StaffName, T, L).
+getMemberSlots(StaffName, [_|T], L) :-
+    getMemberSlots(StaffName, T, L).
 
 % ==================================
 %Checks That All Slots For All Tutorials Are All_Different.
@@ -123,14 +199,123 @@ generateTeachFromLists([],_,[]).
 generateTeachFromLists([teach(Type, StaffMember, Group, Tut, Major, FirstYear, Subject, Hall, _)|T],[NewSlot|S], [teach(Type, StaffMember, Group, Tut, Major, FirstYear, Subject, Hall, NewSlot)|L]) :-
     generateTeachFromLists(T,S,L).
 
-%=====================================================================================
+
+% ==================================Group Predicates==================================
+
+%Finds The Tutorials In Group In A List Of teach() L.
+getTutsInGroup(Group, L, R):-
+    getTutsInGroupHelper(Group, L, D), !,
+    sort(D,R).
+
+getTutsInGroupHelper(Group, [teach(_,_,Group,Tut,_,_,_,_)|T], [Tut|L]):-
+    getTutsInGroupHelper(Group, T, L).
+getTutsInGroupHelper(_, [], []).
+getTutsInGroupHelper(Group, [_|T], L) :-
+    getTutsInGroupHelper(Group, T, L).
+
+% ==================================Tutorial Predicates==================================
+getCommonFreeSlots(StaffMember, Group, Tut, Major, DaysOff, CommonSlots) :-
+    staff(StaffMember,OccSlots,StaffDaysOff),
+    findall(Slots,(teach(3,_,Group,Tut,Major,_,_,_,Slots)),FreeSlots),
+    subtract(FreeSlots, OccSlots, CommonFree),
+    element(_, CommonFree, CommonSlots).
+
+    %findall(Slots,(teach(3,_,Group,Tut,Major,_,_,_,Slots), day(Slots, SlotDay), \+member(SlotsDay, DaysOff) ),FreeSlots),
+    %getDaysOffTut(Group, Tut, Major, TutDaysOff),
+    %findall(Slots,(teach(3,_,Group,Tut,Major,_,_,_,Slots), day(Slots, SlotDay), element(SlotDay,TutDaysOff, DO), DO #\= 1),FreeSlots),
+    %removeDaysOffSlots(CommonFree, StaffDaysOff, TotalFree),
+    %element(_, TotalFree, CommonSlots).
+
+removeDaysOffSlots([], _, []).
+removeDaysOffSlots([H|T], DaysOff, [H|R]) :-
+    day(H, DayOff),
+    \+ member(DayOff, DaysOff),
+    removeDaysOffSlots(T, DaysOff, R).
+removeDaysOffSlots([_|T], DaysOff, R) :-
+    removeDaysOffSlots(T, DaysOff, R).
+
+% ==================================
+getTutorialGroupTuts(Group, Tut, Major, DaysOff, L):-
+    findall(teach(X,St,Group,Tut,Major,Fy,Sb,Hall,Slots),(teach(X,St,Group,Tut,Major,Fy,Sb,Hall,Slots), day(Slots, SlotDay), element(_,DaysOff, DO), DO #\= SlotDay, X #\= 3),L).
+
+% ==================================
+getDaysOffTut(Group, Tut, Major, R) :-
+    findall(Slots,teach(3,_,Group,Tut,Major,_,_,_,Slots),FreeSlots),
+    sort(FreeSlots, SortedSlots),
+    getDaysOff(SortedSlots, R).
+
+% ==================================
+getDaysOff(Slots, L) :-
+    days(Slots, DysOf),
+    daysOffHelper(DysOf,NL), !,
+    length(NL,6),
+    fillListWithZeros(NL,L).
+
+% ==================================
+daysOffHelper([],_).
+daysOffHelper([H|T], L) :-
+    countOcc(H, T, 1, Count, Rest),
+    Count #= 5,
+    nth0(H,L,1),
+    daysOffHelper(Rest,L).
+daysOffHelper([H|T],L) :-
+    countOcc(H, T, 1, _, Rest),
+    daysOffHelper(Rest,L).
+
+% ==================================
+fillListWithZeros([],[]).
+fillListWithZeros([H|T], [1|NL]):-
+    nonvar(H),
+    fillListWithZeros(T,NL).
+fillListWithZeros([H|T], [0|NL]):-
+    var(H),
+    fillListWithZeros(T,NL).
+
+% ==================================
+countOcc(_, [], C, C, []).
+countOcc(X, [X|T], C, R, FilteredList) :-
+    !,
+    Count #= C + 1,
+    countOcc(X, T, Count, R, FilteredList).
+countOcc(_, [H|T], C, C, [H|T]).
+
+% ==================================
+days([],[]).
+days([H|T],[DH|DT]) :-  
+    DH #= div(H,5),
+        days(T,DT).
+
+day(H, DH) :-
+    DH #= div(H,5).
+
+
+
+
+
+
+
+
+
+%=================================Old Room Constraint=================================
+roomConstraint(30, _) :- !.
+roomConstraint(Counter, AllTeach) :-
+    checkSpace(0, AllTeach, Counter),
+    checkSpace(1, AllTeach, Counter),
+    checkSpace(2, AllTeach, Counter),
+    NewCounter #= Counter + 1,
+    roomConstraint(NewCounter, AllTeach).
+
+% ==================================
 %Predicate to get number of Rooms, Labs, Large Halls and Small Halls in a given slot
 getResources(Slot, Teach, LargeHalls, SmallHalls, Rooms, Labs) :-
+    write("GDFD"),
     getLargeHalls(Slot, Teach, LH, LHV),
     sort(LH, Large),
     sort(LHV, LargeV),
+    write(Large, LargeV),
     length(Large, LargeHallsCount),
     length(LargeV, LargeHallsV),
+    
     LargeHalls #= LargeHallsCount + LargeHallsV,
 
     getSmallHalls(Slot, Teach, SH, SHV),
@@ -237,94 +422,6 @@ checkSpace(2, Teach, Slot) :-
     ava(_,_,_,Labs),  
     getResources(Slot, Teach, _, _, _, L),
     Labs #>= L.
-
-% ==================================Group Predicates==================================
-
-%Finds The Tutorials In Group In A List Of teach() L.
-getTutsInGroup(Group, L, R):-
-    getTutsInGroupHelper(Group, L, D), !,
-    sort(D,R).
-
-getTutsInGroupHelper(Group, [teach(_,_,Group,Tut,_,_,_,_)|T], [Tut|L]):-
-    getTutsInGroupHelper(Group, T, L).
-getTutsInGroupHelper(_, [], []).
-getTutsInGroupHelper(Group, [_|T], L) :-
-    getTutsInGroupHelper(Group, T, L).
-
-% ==================================Tutorial Predicates==================================
-getCommonFreeSlots(StaffMember, Group, Tut, Major, DaysOff, CommonSlots) :-
-    staff(StaffMember,OccSlots,StaffDaysOff),
-    findall(Slots,(teach(3,_,Group,Tut,Major,_,_,_,Slots)),FreeSlots),
-    subtract(FreeSlots, OccSlots, CommonFree),
-    element(_, CommonFree, CommonSlots).
-
-    %findall(Slots,(teach(3,_,Group,Tut,Major,_,_,_,Slots), day(Slots, SlotDay), \+member(SlotsDay, DaysOff) ),FreeSlots),
-    %getDaysOffTut(Group, Tut, Major, TutDaysOff),
-    %findall(Slots,(teach(3,_,Group,Tut,Major,_,_,_,Slots), day(Slots, SlotDay), element(SlotDay,TutDaysOff, DO), DO #\= 1),FreeSlots),
-    %removeDaysOffSlots(CommonFree, StaffDaysOff, TotalFree),
-    %element(_, TotalFree, CommonSlots).
-
-removeDaysOffSlots([], _, []).
-removeDaysOffSlots([H|T], DaysOff, [H|R]) :-
-    day(H, DayOff),
-    \+ member(DayOff, DaysOff),
-    removeDaysOffSlots(T, DaysOff, R).
-removeDaysOffSlots([_|T], DaysOff, R) :-
-    removeDaysOffSlots(T, DaysOff, R).
-
-% ==================================
-getTutorialGroupTuts(Group, Tut, Major, DaysOff, L):-
-    findall(teach(X,St,Group,Tut,Major,Fy,Sb,Hall,Slots),(teach(X,St,Group,Tut,Major,Fy,Sb,Hall,Slots), day(Slots, SlotDay), element(_,DaysOff, DO), DO #\= SlotDay, X #\= 3),L).
-
-% ==================================
-getDaysOffTut(Group, Tut, Major, R) :-
-    findall(Slots,teach(3,_,Group,Tut,Major,_,_,_,Slots),FreeSlots),
-    sort(FreeSlots, SortedSlots),
-    getDaysOff(SortedSlots, R).
-
-% ==================================
-getDaysOff(Slots, L) :-
-    days(Slots, DysOf),
-    daysOffHelper(DysOf,NL), !,
-    length(NL,6),
-    fillListWithZeros(NL,L).
-
-% ==================================
-daysOffHelper([],_).
-daysOffHelper([H|T], L) :-
-    countOcc(H, T, 1, Count, Rest),
-    Count #= 5,
-    nth0(H,L,1),
-    daysOffHelper(Rest,L).
-daysOffHelper([H|T],L) :-
-    countOcc(H, T, 1, _, Rest),
-    daysOffHelper(Rest,L).
-
-% ==================================
-fillListWithZeros([],[]).
-fillListWithZeros([H|T], [1|NL]):-
-    nonvar(H),
-    fillListWithZeros(T,NL).
-fillListWithZeros([H|T], [0|NL]):-
-    var(H),
-    fillListWithZeros(T,NL).
-
-% ==================================
-countOcc(_, [], C, C, []).
-countOcc(X, [X|T], C, R, FilteredList) :-
-    !,
-    Count #= C + 1,
-    countOcc(X, T, Count, R, FilteredList).
-countOcc(_, [H|T], C, C, [H|T]).
-
-% ==================================
-days([],[]).
-days([H|T],[DH|DT]) :-  
-    DH #= div(H,5),
-        days(T,DT).
-
-day(H, DH) :-
-    DH #= div(H,5).
 
 %Converts A Variable Domain To A List.
 dom_integers(D, Is) :- phrase(dom_integers_(D), Is).
