@@ -51,11 +51,59 @@ compansate(DaysOff, SlotsDomain):-
     append(Teach, NewTeach, AllTeach),
     roomConstraint(AllTeach),
     %staffConstraint(StaffMembers, AllTeach),
+    findTotalCost(StaffMembers, TutsToComp, )
 
     %setof(teach(X,St,Group,Tut,Mj,Fy,Sb,Hall,Slots),(teach(X,St,Group,Tut,Mj,Fy,Sb,Hall,Slots), day(Slots,DX), element(_,DaysOff, DO), DX #\= DO, element(_,SlotsDomain,SD), DX #\= SD, X #= 3 ), FreeTeach),
     %append(AllTeach, FreeTeach, FinalTeach),
 
     labeling([], SlotsDomain).
+% ==================================
+findTotalCost([], _, _, _, 0).
+findTotalCost(_, [], _, _, 0).
+findTotalStaffCost([Staff|S],[Prefrence|P], TutsComp, TotalCost) :-
+    getStaffCost(Preference, Staff, TutsComp, StaffCost),
+    findTotalStaffCost(S, P, TutsComp, SubCost),
+    TotalCost #= SubCost + StaffCost.
+
+findTotalTutCost([], _, 0).
+findTotalTutCost([Teach|T], TutsToComp, TotalCost) :-
+    Teach = teach(_, _, Group, Tut, Major, _, _, _, _),
+    getTutGroupCost(Group, Tut, Major, TutCost),
+    findTotalTutCost(T, TutsToComp, SubCost),
+    TotalCost #= SubCost + TutCost.
+
+
+getStaffCost(Preference, Staff, TutsComp, Cost) :-
+    %Get The Cost Of Slots Being In The Staff Days Off. 
+    staff(Staff, _, StaffDaysOff),
+    getMemberSlots(Staff, TutsComp, StaffSlots),
+    daysOffCost(StaffDaysOff, StaffSlots, StaffCost),
+
+    prefrenceCost(Preference, StaffSlots, PrefrenceCost),
+    Cost #= StaffCost + PrefrenceCost.
+    
+getTutGroupCost(Group, Tut, Major, TutGroupCost) :-
+    tutSlots(Group, Tut, Major, AllTeach, TutGroupSlots),
+    getDaysOffTut(Group, Tut, Major, TutDaysOff),
+    daysOffCost(TutDaysOff, TutGroupSlots, TutGroupCost).
+
+
+prefrenceCost(Preference, StaffSlots, Num) :-
+    maplist(inPreference(Preference), StaffSlots, Costs),
+    sum(Cost, #= Num).
+
+inPreference(Slot, Preference, Cost) :-
+    day(Slot, SlotDay),
+    SlotDay #\= Preference #<==> Cost. 
+
+daysOffCost(DaysOff, Slots, Num) :-
+    maplist(isInDaysOff(DaysOff), Slots, Costs),
+    sum(Costs, #=, Num).
+
+isInDaysOff(Slot, DaysOff, Cost) :-
+    element(_,DaysOff,DO),
+    day(Slot, SlotDay),
+    DO #= SlotDay #<==> Cost.
 
 % ==================================
 roomConstraint(AllTeach):-
@@ -123,9 +171,9 @@ lTaskCreation([_|T], RT):-
     lTaskCreation(T,RT).
 
 % ==================================
+findCompTeach(_, []).
 findCompTeach(DaysOff, CompTeach) :-
     bagof(teach(X,St,Group,Tut,Mj,Fy,Sb,Hall,Slots),X^Slots^(teach(X,St,Group,Tut,Mj,Fy,Sb,Hall,Slots),element(_, DaysOff, DayOff), day(Slots, SlotDay), SlotDay #= DayOff, X #\= 3),CompTeach), !.
-findCompTeach(_, []).
 
 % ==================================
 staffConstraint([], _).
@@ -185,7 +233,6 @@ tutSlots(Group, Tut, Major, [teach(_, _, Group, Tut, Major, _, _, _, Slot)|L], [
     tutSlots(Group, Tut, Major, L, S).
 tutSlots(Group, Tut, Major, [_|L], S):-
     tutSlots(Group, Tut, Major, L, S).
-
 % ==================================
 %Sets The Possible Slot Domain For Any Tutorial Needs Compansation. 
 slotsDomains([],_,[]).
@@ -198,21 +245,6 @@ slotsDomains([teach(Type, StaffMember, Group, Tut, Major, FirstYear, Subject, Ha
 generateTeachFromLists([],_,[]).
 generateTeachFromLists([teach(Type, StaffMember, Group, Tut, Major, FirstYear, Subject, Hall, _)|T],[NewSlot|S], [teach(Type, StaffMember, Group, Tut, Major, FirstYear, Subject, Hall, NewSlot)|L]) :-
     generateTeachFromLists(T,S,L).
-
-
-% ==================================Group Predicates==================================
-
-%Finds The Tutorials In Group In A List Of teach() L.
-getTutsInGroup(Group, L, R):-
-    getTutsInGroupHelper(Group, L, D), !,
-    sort(D,R).
-
-getTutsInGroupHelper(Group, [teach(_,_,Group,Tut,_,_,_,_)|T], [Tut|L]):-
-    getTutsInGroupHelper(Group, T, L).
-getTutsInGroupHelper(_, [], []).
-getTutsInGroupHelper(Group, [_|T], L) :-
-    getTutsInGroupHelper(Group, T, L).
-
 % ==================================Tutorial Predicates==================================
 getCommonFreeSlots(StaffMember, Group, Tut, Major, DaysOff, CommonSlots) :-
     staff(StaffMember,OccSlots,StaffDaysOff),
@@ -242,7 +274,17 @@ getTutorialGroupTuts(Group, Tut, Major, DaysOff, L):-
 getDaysOffTut(Group, Tut, Major, R) :-
     findall(Slots,teach(3,_,Group,Tut,Major,_,_,_,Slots),FreeSlots),
     sort(FreeSlots, SortedSlots),
-    getDaysOff(SortedSlots, R).
+    getDaysOff(SortedSlots, IndexDaysOff),
+    returnIndexList(0, IndexDaysOff, R).
+
+returnIndexList(_, [], []).
+returnIndexList(Counter, [H|T], [Counter|L]) :-
+    H = 1, !,
+    Counter1 #= Counter + 1,
+    returnIndexList(Counter1, T, L).
+returnIndexList(Counter, [_|T], L):-
+    Counter1 #= Counter + 1,
+    returnIndexList(Counter1, T, L).
 
 % ==================================
 getDaysOff(Slots, L) :-
@@ -287,145 +329,3 @@ days([H|T],[DH|DT]) :-
 
 day(H, DH) :-
     DH #= div(H,5).
-
-
-
-
-
-
-
-
-
-%=================================Old Room Constraint=================================
-roomConstraint(30, _) :- !.
-roomConstraint(Counter, AllTeach) :-
-    checkSpace(0, AllTeach, Counter),
-    checkSpace(1, AllTeach, Counter),
-    checkSpace(2, AllTeach, Counter),
-    NewCounter #= Counter + 1,
-    roomConstraint(NewCounter, AllTeach).
-
-% ==================================
-%Predicate to get number of Rooms, Labs, Large Halls and Small Halls in a given slot
-getResources(Slot, Teach, LargeHalls, SmallHalls, Rooms, Labs) :-
-    write("GDFD"),
-    getLargeHalls(Slot, Teach, LH, LHV),
-    sort(LH, Large),
-    sort(LHV, LargeV),
-    write(Large, LargeV),
-    length(Large, LargeHallsCount),
-    length(LargeV, LargeHallsV),
-    
-    LargeHalls #= LargeHallsCount + LargeHallsV,
-
-    getSmallHalls(Slot, Teach, SH, SHV),
-    sort(SH, Small),
-    sort(SHV, SmallV),
-    length(Small, SmallHallsCount),
-    length(SmallV, SmallHallsV),
-    SmallHalls #= SmallHallsCount + SmallHallsV,
-
-    getRooms(Slot, Teach, R, RV),
-    sort(R, Ro),
-    sort(RV, RoV),
-    length(Ro, RoomsCount),
-    length(RoV, RoomsV),
-    Rooms #= RoomsCount + RoomsV,
-
-    getLabs(Slot, Teach, L, LV),
-    sort(L, La),
-    sort(LV, LaV),
-    length(La, LabsCount),
-    length(LaV, LabsV),
-    Labs #= LabsCount + LabsV.
-
-getLargeHalls(_, [], [],[]).
-getLargeHalls(Slot, [teach(0,Staff,_,_,_,_,_,LargeHallNum,Var)|L], [Staff|T], V) :-
-    nonvar(Var),
-    LargeHallNum #> 10,
-    !,
-    getLargeHalls(Slot, L, T, V).
-getLargeHalls(Slot, [teach(0,Staff,_,_,_,_,_,LargeHallNum,Var)|L], T, [Staff|V]) :-
-    var(Var),
-    fd_dom(Var,D),
-    dom_integers(D, Dom),
-    element(_,Dom,Slot),
-    LargeHallNum #> 10,
-    !,
-    getLargeHalls(Slot, L, T, V).
-getLargeHalls(Slot, [_|L], T, V) :-
-    getLargeHalls(Slot, L, T, V).
-
-getSmallHalls(_, [], [], []).
-getSmallHalls(Slot, [teach(0,Staff,_,_,_,_,_,SmallHallNum,Var)|L], [Staff|T], V) :-
-    nonvar(Var),
-    SmallHallNum #< 11,
-    !,
-    getSmallHalls(Slot, L, T, V).
-getSmallHalls(Slot, [teach(0,Staff,_,_,_,_,_,SmallHallNum,Var)|L], T, [Staff|V]) :-
-    var(Var),
-    fd_dom(Var,D),
-    dom_integers(D, Dom),
-    element(_,Dom,Slot),
-    SmallHallNum #< 11,
-    !,
-    getSmallHalls(Slot, L, T, V).
-
-getSmallHalls(Slot, [_|L], T, V) :-
-    getSmallHalls(Slot, L, T, V).
-
-getRooms(_, [], [], []).
-getRooms(Slot, [teach(1,Staff,_,_,_,_,_,_,Var)|L], [Staff|T], V) :-
-    nonvar(Var),
-    !,
-    getRooms(Slot, L, T, V).
-getRooms(Slot, [teach(1,Staff,_,_,_,_,_,_,Var)|L], T, [Staff|V]) :-
-    var(Var),
-    fd_dom(Var,D),
-    dom_integers(D, Dom),
-    element(_,Dom,Slot),
-    !,
-    getRooms(Slot, L, T, V).
-getRooms(Slot, [_|L], T, V) :-
-    getRooms(Slot, L, T, V).
-
-getLabs(_, [], [], []).
-getLabs(Slot, [teach(2,Staff,_,_,_,_,_,_,Var)|L], [Staff|T], V) :-
-    nonvar(Var),
-    !,
-    getLabs(Slot, L, T, V).
-getLabs(Slot, [teach(2,Staff,_,_,_,_,_,_,Var)|L], T, [Staff|V]) :-
-    var(Var),
-    fd_dom(Var,D),
-    dom_integers(D, Dom),
-    element(_,Dom,Slot),
-    !,
-    getLabs(Slot, L, T, V).
-getLabs(Slot, [_|L], T, V) :-
-    getLabs(Slot, L, T, V).
-
-%=====================================================================================
-%Predicate to check if there is available space for the companseted teach activity
-checkSpace(0, Teach, Slot) :-
-    ava(_,SmallHalls,_,_),  
-    getResources(Slot, Teach, _, SH, _, _), 
-    SmallHalls #>= SH.
-checkSpace(0, Teach, Slot) :-
-    ava(LargeHalls,_,_,_),  
-    getResources(Slot, Teach, LH, _, _, _), 
-    LargeHalls #>= LH.
-checkSpace(1, Teach, Slot) :-
-    ava(_,_, Rooms,_),  
-    getResources(Slot, Teach, _, _, R, _), 
-    Rooms #>= R.
-checkSpace(2, Teach, Slot) :-
-    ava(_,_,_,Labs),  
-    getResources(Slot, Teach, _, _, _, L),
-    Labs #>= L.
-
-%Converts A Variable Domain To A List.
-dom_integers(D, Is) :- phrase(dom_integers_(D), Is).
-
-dom_integers_(I)      --> { integer(I) }, [I].
-dom_integers_(L..U)   --> { numlist(L, U, Is) }, Is.
-dom_integers_(D1\/D2) --> dom_integers_(D1), dom_integers_(D2).
