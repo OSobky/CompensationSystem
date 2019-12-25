@@ -33,7 +33,7 @@ compansate(DaysOff, Preference, SlotsDomain):-
 findTotalStaffCost([], _, _, _, 0).
 findTotalStaffCost(_, [], _, _, 0).
 findTotalStaffCost([Staff|S],[Prefrence|P], TutsComp, TotalCost) :-
-    getStaffCost(Preference, Staff, TutsComp, StaffCost),
+    getStaffCost(Prefrence, Staff, TutsComp, StaffCost),
     findTotalStaffCost(S, P, TutsComp, SubCost),
     TotalCost #= SubCost + StaffCost.
 
@@ -62,7 +62,7 @@ getTutGroupCost(Group, Tut, Major, TutGroupCost) :-
 
 prefrenceCost(Preference, StaffSlots, Num) :-
     maplist(inPreference(Preference), StaffSlots, Costs),
-    sum(Cost, #=, Num).
+    sum(Costs, #=, Num).
 
 inPreference(Slot, Preference, Cost) :-
     day(Slot, SlotDay),

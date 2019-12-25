@@ -670,7 +670,7 @@ teach(1,'English Instructor 6',4,16,'1Engineering IV',1,'AE',0,11).
 teach(1,'English Instructor 7',4,17,'1Engineering IV',1,'AE',0,11).
 teach(1,'English Instructor 8',4,18,'1Engineering IV',1,'AE',0,11).
 teach(1,'Yasmine Mandour',4,17,'1Engineering IV',1,'Chemistry',0,12).
-teach(1,'Mostafa Elwaily',4,Physics18,'1Engineering IV',1,'Chemistry',0,12).
+teach(1,'Mostafa Elwaily',4,18,'1Engineering IV',1,'Chemistry',0,12).
 teach(0,'Hany El Sharkawy',4,15,'1Engineering IV',1,'Math H16',16,13).
 teach(0,'Hany El Sharkawy',4,16,'1Engineering IV',1,'Math H16',16,13).
 teach(0,'Hany El Sharkawy',4,17,'1Engineering IV',1,'Math H16',16,13).
@@ -684,7 +684,7 @@ teach(1,'Reem Moursy',4,15,'1Engineering IV',1,'CSEN',0,12).
 teach(2,'Nardeen Khela',4,15,'1Engineering IV',1,'CSEN Lab',0,14).
 teach(1,'Hebatullah Mohamed',4,16,'1Engineering IV',1,'ENGD',0,12).
 teach(1,'Yasmine Mandour',4,16,'1Engineering IV',1,'Chemistry',0,14).
-teach(1,'Heba Moussa',4,ENGD17,'1Engineering IV',1,'Chemistry',0,14).
+teach(1,'Heba Moussa',4,17,'1Engineering IV',1,'Chemistry',0,14).
 teach(3,'_',5,19,'1Engineering V',1,'FREE',0,11).
 teach(3,'_',5,20,'1Engineering V',1,'FREE',0,11).
 teach(3,'_',5,21,'1Engineering V',1,'FREE',0,11).
@@ -943,7 +943,7 @@ teach(1,'Ali Saudi',4,17,'1Engineering IV',1,'CSEN',0,18).
 teach(1,'Noha Abdellatif',4,18,'1Engineering IV',1,'CSEN',0,18).
 teach(1,'Sherif Aref',4,18,'1Engineering IV',1,'Chemistry',0,20).
 teach(1,'Noha Abdellatif',4,16,'1Engineering IV',1,'CSEN',0,20).
-teach(1,'Mohamed Zamzam',4,Physics17,'1Engineering IV',1,'CSEN',0,20).
+teach(1,'Mohamed Zamzam',4,17,'1Engineering IV',1,'CSEN',0,20).
 teach(3,'_',5,19,'1Engineering V',1,'FREE',0,16).
 teach(3,'_',5,20,'1Engineering V',1,'FREE',0,16).
 teach(3,'_',5,21,'1Engineering V',1,'FREE',0,16).
@@ -1315,7 +1315,7 @@ teach(2,'Yomna Elghandoor',8,35,'1Engineering VIII',1,'CSEN Lab',0,21).
 teach(2,'Rana Ahmed',8,36,'1Engineering VIII',1,'CSEN Lab',0,23).
 teach(3,'_',8,37,'1Engineering VIII',1,'FREE',0,25).
 teach(1,'Nourhan Ali',8,36,'1Engineering VIII',1,'Math',0,21).
-teach(1,'Liza Botros',8,Chemistry33,'1Engineering VIII',1,'Math',0,21).
+teach(1,'Liza Botros',8,33,'1Engineering VIII',1,'Math',0,21).
 teach(3,'_',8,37,'1Engineering VIII',1,'FREE',0,23).
 teach(2,'Fatema Gabr',9,38,'1Engineering IX',1,'CSEN Lab',0,21).
 teach(2,'Ali Saudi',9,39,'1Engineering IX',1,'CSEN Lab',0,21).
