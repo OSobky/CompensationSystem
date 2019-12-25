@@ -12,7 +12,8 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 public class ExcelParsing {
 
 	public static void main(String[]args) throws IOException {
-		String filePath = "D:\\GUC\\SEMESTER 9\\CSEN 906 ( Constraint Programming )\\PROJECT\\Java Code\\CP Project\\src\\modifiedSchedule2.xlsx";
+		String currentFolder = System.getProperty("user.dir");
+		String filePath = currentFolder + "\\modifiedSchedule2.xlsx";
 		File file = new File(filePath); 
 		FileInputStream modifiedSchedule = new FileInputStream(file);
 		XSSFWorkbook wb = new XSSFWorkbook(modifiedSchedule);
@@ -34,11 +35,16 @@ public class ExcelParsing {
 		
 		ArrayList<Staff> members = getStaffMembers(KB); 
 		for( int i = 0; i < members.size(); i++ ) {
-			if( !members.get(i).name.equals("_") )
+			if( !members.get(i).name.equals("_") ) {
+				members.get(i).genDaysOff();
 				KBStr += members.get(i).toString();
+			}
 		}
 		
-		String KBDest = "../../Repo/KB.txt";
+		KBStr += "ava(5,1,50,8).";
+		KBStr = KBStr.trim();
+		
+		String KBDest = "../../Repo/KB.pl";
 		PrintWriter writer = new PrintWriter(KBDest, "UTF-8");
 		writer.println(KBStr);
 		writer.close();
@@ -69,6 +75,9 @@ public class ExcelParsing {
 					currentGroup = filterGroupName(value);
 					tutsInGroup = extractTutsInGroup(value);
 				} else {
+					if( currentGroup.charAt(0) != '1' ) 
+						continue;
+					
 					int firstYear = isFirstYear(currentGroup);
 					int groupNum = extractGroupNumber(currentGroup);
 					int hall = lectureHall(value);

@@ -7,26 +7,31 @@
 %ava(LargeHalls, smallHalls, Rooms, Labs).
 
 % ==================================
-compansate(DaysOff, SlotsDomain):-
+compansate(DaysOff, Preference, SlotsDomain):-
     findCompTeach(DaysOff, TutsToComp),
     findall(Staff,staff(Staff,_,_), StaffMembers),
     setof(teach(X,St,Group,Tut,Mj,Fy,Sb,Hall,Slots),(teach(X,St,Group,Tut,Mj,Fy,Sb,Hall,Slots), day(Slots,DX), element(_,DaysOff, DO), DX #\= DO, X #\= 3 ),Teach),
 
     slotsDomains(TutsToComp, DaysOff, SlotsDomain),
     generateTeachFromLists(TutsToComp, SlotsDomain, NewTeach),
-    checkTutSlotConstraint(NewTeach, DaysOff),
     append(Teach, NewTeach, AllTeach),
+    
+    checkTutSlotConstraint(NewTeach, DaysOff),
     roomConstraint(AllTeach),
-    %staffConstraint(StaffMembers, AllTeach),
-    %findTotalCost(StaffMembers, TutsToComp, )
+    staffConstraint(StaffMembers, AllTeach),
+    
+    findTotalStaffCost(StaffMembers, Preference, TutsToComp, StaffCost),
+    findTotalTutCost(NewTeach, TutsToComp, TutGroupCost),
+    Cost #= StaffCost + TutGroupCost,
+
 
     %setof(teach(X,St,Group,Tut,Mj,Fy,Sb,Hall,Slots),(teach(X,St,Group,Tut,Mj,Fy,Sb,Hall,Slots), day(Slots,DX), element(_,DaysOff, DO), DX #\= DO, element(_,SlotsDomain,SD), DX #\= SD, X #= 3 ), FreeTeach),
     %append(AllTeach, FreeTeach, FinalTeach),
 
-    labeling([], SlotsDomain).
+    labeling([min(Cost)], SlotsDomain).
 % ==================================
-findTotalCost([], _, _, _, 0).
-findTotalCost(_, [], _, _, 0).
+findTotalStaffCost([], _, _, _, 0).
+findTotalStaffCost(_, [], _, _, 0).
 findTotalStaffCost([Staff|S],[Prefrence|P], TutsComp, TotalCost) :-
     getStaffCost(Preference, Staff, TutsComp, StaffCost),
     findTotalStaffCost(S, P, TutsComp, SubCost),
@@ -218,20 +223,6 @@ getCommonFreeSlots(StaffMember, Group, Tut, Major, DaysOff, CommonSlots) :-
     findall(Slots,(teach(3,_,Group,Tut,Major,_,_,_,Slots)),FreeSlots),
     subtract(FreeSlots, OccSlots, CommonFree),
     element(_, CommonFree, CommonSlots).
-
-    %findall(Slots,(teach(3,_,Group,Tut,Major,_,_,_,Slots), day(Slots, SlotDay), \+member(SlotsDay, DaysOff) ),FreeSlots),
-    %getDaysOffTut(Group, Tut, Major, TutDaysOff),
-    %findall(Slots,(teach(3,_,Group,Tut,Major,_,_,_,Slots), day(Slots, SlotDay), element(SlotDay,TutDaysOff, DO), DO #\= 1),FreeSlots),
-    %removeDaysOffSlots(CommonFree, StaffDaysOff, TotalFree),
-    %element(_, TotalFree, CommonSlots).
-
-removeDaysOffSlots([], _, []).
-removeDaysOffSlots([H|T], DaysOff, [H|R]) :-
-    day(H, DayOff),
-    \+ member(DayOff, DaysOff),
-    removeDaysOffSlots(T, DaysOff, R).
-removeDaysOffSlots([_|T], DaysOff, R) :-
-    removeDaysOffSlots(T, DaysOff, R).
 
 % ==================================
 getTutorialGroupTuts(Group, Tut, Major, DaysOff, L):-

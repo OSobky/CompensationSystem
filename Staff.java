@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Random;
 
 public class Staff {
 	String name;
@@ -17,6 +18,29 @@ public class Staff {
 	public void addSlot( int slot ) {
 		if( !occSlots.contains(slot) ) 
 			occSlots.add(slot);
+	}
+	
+	public void genDaysOff() {
+		Random random = new Random();
+		int dayOff = random.nextInt(3);
+		boolean found = false;
+		int count = 0;
+		
+		while( !found && count < 6 ) {
+			int i = 0;
+			while( i < occSlots.size() ) {
+				if( (occSlots.get(i) / 5) == dayOff)
+					break;
+				i++;
+			}
+			if( i == occSlots.size() ) {
+				found = true;
+				daysOff.add(dayOff);
+			}
+			dayOff = (dayOff + 1) % 6;
+			count++;
+		}
+		
 	}
 	
 	public String toString() {
@@ -39,7 +63,7 @@ public class Staff {
 			fact = fact.substring(0,fact.length()-1);
 			fact += "]";
 		} else {
-			fact += ",_";
+			fact += ",[]";
 		}
 		
 		fact +=	").\n";
