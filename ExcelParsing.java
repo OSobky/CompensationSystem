@@ -37,6 +37,7 @@ public class ExcelParsing {
 		for( int i = 0; i < members.size(); i++ ) {
 			if( !members.get(i).name.equals("_") ) {
 				members.get(i).genDaysOff();
+				members.get(i).genPreference();
 				KBStr += members.get(i).toString();
 			}
 		}

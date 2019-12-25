@@ -2,14 +2,15 @@
 :- use_module(library(clpfd)).
 
 %teach(Type, StaffMember, Group, Tut, Major, FirstYear, Subject, Hall, Slot).
-%staff(Name, OccSlots, DaysOff).
+%staff(Name, OccSlots, DaysOff, Preference).
 %Hall is 0 if the type not a lecture.
 %ava(LargeHalls, smallHalls, Rooms, Labs).
 
 % ==================================
-compansate(DaysOff, Preference, SlotsDomain):-
+compansate(DaysOff, SlotsDomain):-
     findCompTeach(DaysOff, TutsToComp),
-    findall(Staff,staff(Staff,_,_), StaffMembers),
+    findall(Staff,staff(Staff,_,_,_), StaffMembers),
+    findall(Preference,staff(_,_,_,Preference), Preferences),
     setof(teach(X,St,Group,Tut,Mj,Fy,Sb,Hall,Slots),(teach(X,St,Group,Tut,Mj,Fy,Sb,Hall,Slots), day(Slots,DX), element(_,DaysOff, DO), DX #\= DO, X #\= 3 ),Teach),
 
     slotsDomains(TutsToComp, DaysOff, SlotsDomain),
@@ -20,7 +21,7 @@ compansate(DaysOff, Preference, SlotsDomain):-
     roomConstraint(AllTeach),
     staffConstraint(StaffMembers, AllTeach),
     
-    findTotalStaffCost(StaffMembers, Preference, TutsToComp, StaffCost),
+    findTotalStaffCost(StaffMembers, Preferences, TutsToComp, StaffCost),
     findTotalTutCost(NewTeach, TutsToComp, TutGroupCost),
     Cost #= StaffCost + TutGroupCost,
 
@@ -30,30 +31,30 @@ compansate(DaysOff, Preference, SlotsDomain):-
 
     labeling([min(Cost)], SlotsDomain).
 % ==================================
-findTotalStaffCost([], _, _, _, 0).
-findTotalStaffCost(_, [], _, _, 0).
+findTotalStaffCost([], _, _, _, 0) :- !.
+findTotalStaffCost(_, [], _, _, 0) :- !.
 findTotalStaffCost([Staff|S],[Prefrence|P], TutsComp, TotalCost) :-
     getStaffCost(Prefrence, Staff, TutsComp, StaffCost),
     findTotalStaffCost(S, P, TutsComp, SubCost),
     TotalCost #= SubCost + StaffCost.
 
-findTotalTutCost([], _, 0).
-findTotalTutCost([Teach|T], TutsToComp, TotalCost) :-
-    Teach = teach(_, _, Group, Tut, Major, _, _, _, _),
-    getTutGroupCost(Group, Tut, Major, TutCost),
-    findTotalTutCost(T, TutsToComp, SubCost),
-    TotalCost #= SubCost + TutCost.
-
-
+%Get The Cost Of Slots Being In The Staff Days Off. 
 getStaffCost(Preference, Staff, TutsComp, Cost) :-
-    %Get The Cost Of Slots Being In The Staff Days Off. 
-    staff(Staff, _, StaffDaysOff),
+    staff(Staff, _, StaffDaysOff,_),
     getMemberSlots(Staff, TutsComp, StaffSlots),
     daysOffCost(StaffDaysOff, StaffSlots, StaffCost),
 
     prefrenceCost(Preference, StaffSlots, PrefrenceCost),
     Cost #= StaffCost + PrefrenceCost.
     
+
+findTotalTutCost([], _, 0) :- !.
+findTotalTutCost([Teach|T], TutsToComp, TotalCost) :-
+    Teach = teach(_, _, Group, Tut, Major, _, _, _, _),
+    getTutGroupCost(Group, Tut, Major, TutCost),
+    findTotalTutCost(T, TutsToComp, SubCost),
+    TotalCost #= SubCost + TutCost.
+
 getTutGroupCost(Group, Tut, Major, TutGroupCost) :-
     tutSlots(Group, Tut, Major, AllTeach, TutGroupSlots),
     getDaysOffTut(Group, Tut, Major, TutDaysOff),
@@ -143,9 +144,9 @@ lTaskCreation([_|T], RT):-
     lTaskCreation(T,RT).
 
 % ==================================
-findCompTeach(_, []).
 findCompTeach(DaysOff, CompTeach) :-
     bagof(teach(X,St,Group,Tut,Mj,Fy,Sb,Hall,Slots),X^Slots^(teach(X,St,Group,Tut,Mj,Fy,Sb,Hall,Slots),element(_, DaysOff, DayOff), day(Slots, SlotDay), SlotDay #= DayOff, X #\= 3),CompTeach), !.
+findCompTeach(_, []).
 
 % ==================================
 staffConstraint([], _).
@@ -219,7 +220,7 @@ generateTeachFromLists([teach(Type, StaffMember, Group, Tut, Major, FirstYear, S
     generateTeachFromLists(T,S,L).
 % ==================================Tutorial Predicates==================================
 getCommonFreeSlots(StaffMember, Group, Tut, Major, DaysOff, CommonSlots) :-
-    staff(StaffMember,OccSlots,StaffDaysOff),
+    staff(StaffMember,OccSlots,_,_),
     findall(Slots,(teach(3,_,Group,Tut,Major,_,_,_,Slots)),FreeSlots),
     subtract(FreeSlots, OccSlots, CommonFree),
     element(_, CommonFree, CommonSlots).

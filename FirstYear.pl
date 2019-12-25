@@ -1674,96 +1674,96 @@ teach(3,'_',1,5,'1Architecture',1,'FREE',0,30).
 teach(3,'_',1,6,'1Architecture',1,'FREE',0,30).
 teach(3,'_',1,7,'1Architecture',1,'FREE',0,30).
 teach(3,'_',1,8,'1Architecture',1,'FREE',0,30).
-staff('English Instructor 1',[1,3,7,11,12,20,23,25,21,27],[3]).
-staff('English Instructor 2',[1,3,7,11,12,20,23,25,21,27],[3]).
-staff('English Instructor 3',[1,3,7,11,12,20,23,25,21,27],[3]).
-staff('English Instructor 4',[1,3,7,11,12,20,23,25,21,27],[3]).
-staff('Alaa El Din Abdel Latif',[2,3,4,8,7,19,17,21,24,23],[2]).
-staff('Amna Ramzy',[2,3,4,8,7],[2]).
-staff('Karim Elghazawy',[3,1,12,23],[1]).
-staff('Deutsch Instructor 10',[4,14,23],[3]).
-staff('Deutsch Instructor 11',[4,14,23],[3]).
-staff('Deutsch Instructor 12',[4,14,23],[1]).
-staff('Deutsch Instructor 13',[4,14,23],[1]).
-staff('Ali Saudi',[3,2,1,4,5,6,7,9,11,12,14,16,17,18,24,22,23,21,29],[]).
-staff('Nardeen Khela',[3,14,18,20],[1]).
-staff('Sherif Aref',[3,2,4,12,18,20,30,28],[1]).
-staff('Mustafa Mustafa Hanafi',[3,4,6,8,9,12,19,18,27,28],[4]).
-staff('English Instructor 5',[1,3,7,11,12,20,23,25,21,27],[3]).
-staff('English Instructor 6',[1,3,7,11,12,20,23,25,21,27],[3]).
-staff('English Instructor 7',[1,3,7,11,12,20,23,25,21,27],[3]).
-staff('English Instructor 8',[1,3,7,11,12,20,23,25,21,27],[3]).
-staff('Ahmed Shash',[2,3,4,8,7],[2]).
-staff('Nourhan Ali',[3,4,13,14,18,19,21,28],[1]).
-staff('Lina Helal',[3,2,1,5,7,9,19,24,23,21,29,30],[2]).
-staff('Mohamed Hafez',[3,2,1,5,8,7,19,24,23,21,28,27],[2]).
-staff('Deutsch Instructor 14',[4,14,23],[3]).
-staff('Deutsch Instructor 15',[4,23],[1]).
-staff('Deutsch Instructor 16',[4,23],[1]).
-staff('Deutsch Instructor 17',[4,23],[1]).
-staff('Hebatullah Mohamed',[3,2,4,5,10,12],[3]).
-staff('Hany El Sharkawy',[4,2,1,14,13,21,22,27,26,29],[1]).
-staff('Deutsch Instructor 1',[5,3,6,9,13,25,22,29,28],[3]).
-staff('Deutsch Instructor 2',[5,3,6,9,13,25,22,29,28],[3]).
-staff('Deutsch Instructor 3',[5,3,6,9,13,25,22,29,28],[3]).
-staff('Deutsch Instructor 4',[5,3,6,9,13,25,22,29,28],[3]).
-staff('Fatema Gabr',[2,5,22,21],[2]).
-staff('Mariam Azab',[2,1,4,18,17,24,22,21],[1]).
-staff('Hazem Abdelhafiz',[2,4,5,28,26,27,30],[2]).
-staff('Karim Ahmed',[2,5,24,21],[2]).
-staff('Deutsch Instructor 5',[5,3,6,9,13,25,22,29,28],[3]).
-staff('Deutsch Instructor 6',[5,3,6,9,13,25,22,29,28],[3]).
-staff('Deutsch Instructor 7',[5,3,6,9,13,25,22,29,28],[3]).
-staff('Deutsch Instructor 8',[5,3,6,9,14,25,22,29,28],[3]).
-staff('Deutsch Instructor 9',[5,3,14,22],[3]).
-staff('Andrew Faried',[1,5,10,9,12,13,19,20,24,21,26],[]).
-staff('Hadwa Pasha',[1,4,19,20,24,26,27,28,30],[1]).
-staff('Noha Abdellatif',[1,4,8,9,18,20,24,22,21,26,27,28,30],[2]).
-staff('Alia Badawy',[1,8,7,9,16],[2]).
-staff('English Instructor 9',[2,8,11,24,30],[3]).
-staff('English Instructor 10',[2,8,11,24,30],[3]).
-staff('English Instructor 11',[2,8,11,24,30],[3]).
-staff('English Instructor 12',[2,8,11,24,30],[3]).
-staff('Paula Tanaghy',[5,6,10,9,12,24],[3]).
-staff('English Instructor 13',[2,8,24,30],[2]).
-staff('English Instructor 14',[2,8,24,30],[2]).
-staff('English Instructor 15',[2,8,24,30],[2]).
-staff('English Instructor 16',[2,8,24,30],[2]).
-staff('Christian Schmitt',[1,6,17,22],[2]).
-staff('Erwin Herzberger',[4],[2]).
-staff('Lamis Ahmed',[5,9,10,25],[3]).
-staff('Lydia Yacoub',[5,9,10],[3]).
-staff('Slim Abdennadher',[9,29],[2]).
-staff('Amgad Amin',[7,8,9,11,13,12,17,20,21,29,26,28],[0]).
-staff('Khaled Alagha',[7,8,11,12,16,18,29,26],[0]).
-staff('Nesrine El-Gohary',[9,6],[0]).
-staff('Sahar Soussa',[6,9,7,13,11,12,14,28],[3]).
-staff('Yehia Hatab',[6,7,10,8,22,21,23,29],[0]).
-staff('Abeer Khalifa',[10,8,7,13,12,14,17,18,24,22,28,27],[0]).
-staff('Hesham Hussein',[10,6,7,11,12,14,16,18,19,23,22,28],[0]).
-staff('Liza Botros',[6,8,18,16,21,27,26],[2]).
-staff('Mostafa Elwaily',[7,6,8,11,13,12,16,18,24],[5]).
-staff('Yasmine Mandour',[10,7,8,12,14,24],[0]).
-staff('Islam Eddiasty',[7,8,12,13,23,21,29,27,28],[0]).
-staff('Heba Moussa',[10,14,17,28,29],[1]).
-staff('Reem Moursy',[6,7,8,11,12,16,18,28],[4]).
-staff('Mohamed Zamzam',[10,18,17,20,24,23,28,30],[0]).
-staff('Walaa Saad Mahmoud',[8,7,13,28,26,30],[0]).
-staff('Youmna Elghandoor',[8,7],[2]).
-staff('Mohammed Salem',[10,28],[3]).
-staff('Rasha Emara',[8,7,12,11,14,18,24,21],[5]).
-staff('Youssef Abou Shady',[8,16,17,18,24,22,21],[2]).
-staff('Rana Ahmed',[7,8,11,12,13,17,18,16,19,24,22,21,23,29],[0]).
-staff('Islam Hegazy',[17,19,20,23,28,29,27,26],[0]).
-staff('Eman Abdelsayed',[16],[1]).
-staff('Abdulnaby Hussein',[18,24,21],[2]).
-staff('Rana Elazhary',[20,28,26,30],[1]).
-staff('Nada Hamed',[22],[1]).
-staff('English Instructor 17',[25],[2]).
-staff('English Instructor 18',[25],[2]).
-staff('Deutsch Instructor 18',[23],[2]).
-staff('English Instructor 19',[25],[0]).
-staff('English Instructor 20',[25],[1]).
-staff('Yomna Elghandoor',[21],[2]).
-staff('Nermin Ahmed',[26,27],[0]).
+staff('English Instructor 1',[1,3,7,11,12,20,23,25,21,27],[3],[]).
+staff('English Instructor 2',[1,3,7,11,12,20,23,25,21,27],[3],[]).
+staff('English Instructor 3',[1,3,7,11,12,20,23,25,21,27],[3],[]).
+staff('English Instructor 4',[1,3,7,11,12,20,23,25,21,27],[3],[]).
+staff('Alaa El Din Abdel Latif',[2,3,4,8,7,19,17,21,24,23],[2],[5]).
+staff('Amna Ramzy',[2,3,4,8,7],[2],[3]).
+staff('Karim Elghazawy',[3,1,12,23],[1],[3]).
+staff('Deutsch Instructor 10',[4,14,23],[1],[3]).
+staff('Deutsch Instructor 11',[4,14,23],[3],[1]).
+staff('Deutsch Instructor 12',[4,14,23],[1],[3]).
+staff('Deutsch Instructor 13',[4,14,23],[1],[3]).
+staff('Ali Saudi',[3,2,1,4,5,6,7,9,11,12,14,16,17,18,24,22,23,21,29],[],[]).
+staff('Nardeen Khela',[3,14,18,20],[1],[5]).
+staff('Sherif Aref',[3,2,4,12,18,20,30,28],[1],[]).
+staff('Mustafa Mustafa Hanafi',[3,4,6,8,9,12,19,18,27,28],[4],[]).
+staff('English Instructor 5',[1,3,7,11,12,20,23,25,21,27],[3],[]).
+staff('English Instructor 6',[1,3,7,11,12,20,23,25,21,27],[3],[]).
+staff('English Instructor 7',[1,3,7,11,12,20,23,25,21,27],[3],[]).
+staff('English Instructor 8',[1,3,7,11,12,20,23,25,21,27],[3],[]).
+staff('Ahmed Shash',[2,3,4,8,7],[2],[3]).
+staff('Nourhan Ali',[3,4,13,14,18,19,21,28],[1],[]).
+staff('Lina Helal',[3,2,1,5,7,9,19,24,23,21,29,30],[2],[]).
+staff('Mohamed Hafez',[3,2,1,5,8,7,19,24,23,21,28,27],[2],[]).
+staff('Deutsch Instructor 14',[4,14,23],[3],[1]).
+staff('Deutsch Instructor 15',[4,23],[1],[2]).
+staff('Deutsch Instructor 16',[4,23],[1],[2]).
+staff('Deutsch Instructor 17',[4,23],[1],[2]).
+staff('Hebatullah Mohamed',[3,2,4,5,10,12],[3],[4]).
+staff('Hany El Sharkawy',[4,2,1,14,13,21,22,27,26,29],[1],[3]).
+staff('Deutsch Instructor 1',[5,3,6,9,13,25,22,29,28],[3],[]).
+staff('Deutsch Instructor 2',[5,3,6,9,13,25,22,29,28],[3],[]).
+staff('Deutsch Instructor 3',[5,3,6,9,13,25,22,29,28],[3],[]).
+staff('Deutsch Instructor 4',[5,3,6,9,13,25,22,29,28],[3],[]).
+staff('Fatema Gabr',[2,5,22,21],[2],[3]).
+staff('Mariam Azab',[2,1,4,18,17,24,22,21],[1],[2]).
+staff('Hazem Abdelhafiz',[2,4,5,28,26,27,30],[2],[3]).
+staff('Karim Ahmed',[2,5,24,21],[2],[3]).
+staff('Deutsch Instructor 5',[5,3,6,9,13,25,22,29,28],[3],[]).
+staff('Deutsch Instructor 6',[5,3,6,9,13,25,22,29,28],[3],[]).
+staff('Deutsch Instructor 7',[5,3,6,9,13,25,22,29,28],[3],[]).
+staff('Deutsch Instructor 8',[5,3,6,9,14,25,22,29,28],[3],[]).
+staff('Deutsch Instructor 9',[5,3,14,22],[3],[5]).
+staff('Andrew Faried',[1,5,10,9,12,13,19,20,24,21,26],[],[]).
+staff('Hadwa Pasha',[1,4,19,20,24,26,27,28,30],[1],[2]).
+staff('Noha Abdellatif',[1,4,8,9,18,20,24,22,21,26,27,28,30],[2],[]).
+staff('Alia Badawy',[1,8,7,9,16],[2],[4]).
+staff('English Instructor 9',[2,8,11,24,30],[3],[5]).
+staff('English Instructor 10',[2,8,11,24,30],[3],[5]).
+staff('English Instructor 11',[2,8,11,24,30],[3],[5]).
+staff('English Instructor 12',[2,8,11,24,30],[3],[5]).
+staff('Paula Tanaghy',[5,6,10,9,12,24],[3],[0]).
+staff('English Instructor 13',[2,8,24,30],[2],[3]).
+staff('English Instructor 14',[2,8,24,30],[2],[3]).
+staff('English Instructor 15',[2,8,24,30],[2],[3]).
+staff('English Instructor 16',[2,8,24,30],[2],[3]).
+staff('Christian Schmitt',[1,6,17,22],[2],[5]).
+staff('Erwin Herzberger',[4],[1],[2]).
+staff('Lamis Ahmed',[5,9,10,25],[3],[0]).
+staff('Lydia Yacoub',[5,9,10],[3],[0]).
+staff('Slim Abdennadher',[9,29],[2],[0]).
+staff('Amgad Amin',[7,8,9,11,13,12,17,20,21,29,26,28],[0],[]).
+staff('Khaled Alagha',[7,8,11,12,16,18,29,26],[0],[4]).
+staff('Nesrine El-Gohary',[9,6],[2],[0]).
+staff('Sahar Soussa',[6,9,7,13,11,12,14,28],[3],[0]).
+staff('Yehia Hatab',[6,7,10,8,22,21,23,29],[3],[0]).
+staff('Abeer Khalifa',[10,8,7,13,12,14,17,18,24,22,28,27],[0],[]).
+staff('Hesham Hussein',[10,6,7,11,12,14,16,18,19,23,22,28],[0],[]).
+staff('Liza Botros',[6,8,18,16,21,27,26],[2],[0]).
+staff('Mostafa Elwaily',[7,6,8,11,13,12,16,18,24],[5],[0]).
+staff('Yasmine Mandour',[10,7,8,12,14,24],[3],[0]).
+staff('Islam Eddiasty',[7,8,12,13,23,21,29,27,28],[0],[3]).
+staff('Heba Moussa',[10,14,17,28,29],[0],[1]).
+staff('Reem Moursy',[6,7,8,11,12,16,18,28],[4],[0]).
+staff('Mohamed Zamzam',[10,18,17,20,24,23,28,30],[0],[1]).
+staff('Walaa Saad Mahmoud',[8,7,13,28,26,30],[3],[0]).
+staff('Youmna Elghandoor',[8,7],[0],[2]).
+staff('Mohammed Salem',[10,28],[3],[0]).
+staff('Rasha Emara',[8,7,12,11,14,18,24,21],[5],[0]).
+staff('Youssef Abou Shady',[8,16,17,18,24,22,21],[0],[2]).
+staff('Rana Ahmed',[7,8,11,12,13,17,18,16,19,24,22,21,23,29],[0],[]).
+staff('Islam Hegazy',[17,19,20,23,28,29,27,26],[1],[0]).
+staff('Eman Abdelsayed',[16],[2],[0]).
+staff('Abdulnaby Hussein',[18,24,21],[1],[0]).
+staff('Rana Elazhary',[20,28,26,30],[1],[0]).
+staff('Nada Hamed',[22],[1],[0]).
+staff('English Instructor 17',[25],[0],[1]).
+staff('English Instructor 18',[25],[2],[0]).
+staff('Deutsch Instructor 18',[23],[1],[0]).
+staff('English Instructor 19',[25],[1],[0]).
+staff('English Instructor 20',[25],[2],[0]).
+staff('Yomna Elghandoor',[21],[2],[0]).
+staff('Nermin Ahmed',[26,27],[0],[1]).
 ava(5,1,50,8).

@@ -5,6 +5,7 @@ public class Staff {
 	String name;
 	ArrayList<Integer> occSlots = new ArrayList<Integer>();
 	ArrayList<Integer> daysOff = new ArrayList<Integer>();
+	ArrayList<Integer> preferences = new ArrayList<Integer>();
 	
 	public Staff( String name ) {
 		this.name = name;
@@ -43,6 +44,25 @@ public class Staff {
 		
 	}
 	
+	public void genPreference() {
+		int preference = 0;
+		boolean found = false;
+		
+		while( !found && preference < 6 ) {
+			int i = 0;
+			while( i < occSlots.size() ) {
+				if( (occSlots.get(i) / 5) == preference || daysOff.contains(preference) )
+					break;
+				i++;
+			}
+			if( i == occSlots.size() ) {
+				found = true;
+				preferences.add(preference);
+			}
+			preference++;
+		}
+	}
+	
 	public String toString() {
 		String fact = "staff('";
 		fact += name + "',[";
@@ -58,6 +78,18 @@ public class Staff {
 			fact += ",[";
 			for( int i = 0; i < daysOff.size(); i++ ) {
 				fact += daysOff.get(i) + ",";
+			}
+			
+			fact = fact.substring(0,fact.length()-1);
+			fact += "]";
+		} else {
+			fact += ",[]";
+		}
+		
+		if( preferences.size() > 0 ) {
+			fact += ",[";
+			for( int i = 0; i < preferences.size(); i++ ) {
+				fact += preferences.get(i) + ",";
 			}
 			
 			fact = fact.substring(0,fact.length()-1);
