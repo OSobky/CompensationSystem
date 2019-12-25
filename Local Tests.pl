@@ -1,33 +1,56 @@
-ava(5,5,2,2).
+ava(2,2,3,0).
 
-staff('H',[1,2,3,4,5],[4,5]).
-staff('Z',[1,2,3,4,5],[4,5]).
-staff('F',[1,2,3,4,5],[4,5]).
-staff('J',[1,2,3,4,5],[4,5]).
+staff('First Tut',[0,1,2,3,4,5,10,13],[3,4,5],[1]).
+staff('Second Tut',[0,1,2,3,4,6,10,14],[3,4,5],[1]).
+staff('Third Tut',[11],[0,1,3,4,5],[1]).
 
-teach(3,'H',2,3,e,0,'math',0,11).
-teach(0,'Z',2,3,e,0,'math',3,1).
-teach(1,'H',2,3,e,0,'math',0,2).
-teach(1,'Z',2,3,e,0,'math',0,10).
+teach(1,'First Tut',1,1,e,0,'Math',0, 0).
+teach(1,'Second Tut',1,2,e,0,'Math',0,0).
 
-teach(1,'Z',2,5,e,0,'math',0,2).
-teach(1,'H',2,5,e,0,'math',0,1).
-teach(3,'H',2,5,e,0,'math',0,2).
-teach(1,'H',2,5,e,0,'math',0,3).
+teach(1,'First Tut',1,1,e,0,'Math',0, 1).
+teach(1,'Second Tut',1,2,e,0,'Math',0,1).
 
-teach(3,'H',2,5,e,0,'math',0,4).
-teach(3,'H',2,5,e,0,'math',0,5).
-teach(3,'5',2,5,e,0,'math',0,6).
-teach(3,'H',2,5,e,0,'math',0,7).
-teach(3,'H',2,5,e,0,'math',0,8).
-teach(3,'H',2,5,e,0,'math',0,9).
+teach(1,'First Tut',1,1,e,0,'Math',0, 2).
+teach(1,'Second Tut',1,2,e,0,'Math',0,2).
 
-teach(2,'H',2,5,e,0,'math',0,10).
-teach(2,'H',2,5,e,0,'math',0,11).
-teach(2,'H',2,5,e,0,'math',0,12).
-teach(2,'H',2,5,e,0,'math',0,13).
+teach(1,'First Tut',1,1,e,0,'Math',0, 3).
+teach(1,'Second Tut',1,2,e,0,'Math',0,3).
 
-teach(1,'H',2,6,e,0,'math',0,1).
-teach(1,'H',2,6,e,0,'math',0,2).
-teach(1,'H',2,6,e,0,'math',0,10).
-teach(3,'H',2,6,e,0,'math',0,11).
+teach(1,'First Tut',1,1,e,0,'Math',0, 4).
+teach(1,'Second Tut',1,2,e,0,'Math',0,4).
+
+teach(1,'First Tut',1,1,e,0,'Math',0, 5).
+teach(3,'_',1,2,e,0,'FREE',0,5).
+
+teach(3,'_',1,1,e,0,'FREE',0, 6).
+teach(1,'Second Tut',1,2,e,0,'Math',0,6).
+
+teach(3,'_',1,1,e,0,'FREE',0, 7).
+teach(3,'_',1,2,e,0,'FREE',0,7).
+
+teach(3,'_',1,1,e,0,'FREE',0, 8).
+teach(3,'_',1,2,e,0,'FREE',0,8).
+
+teach(3,'_',1,1,e,0,'FREE',0, 9).
+teach(3,'_',1,2,e,0,'FREE',0,9).
+
+
+teach(1,'First Tut',1,1,e,0,'Math',0, 10).
+teach(1,'Second Tut',1,2,e,0,'Math',0,10).
+
+teach(3,'_',1,1,e,0,'FREE',0, 11).
+teach(3,'_',1,2,e,0,'FREE',0, 11).
+teach(1,'Third Tut',1,3,e,0,'Math',0,11).
+
+teach(3,'_',1,1,e,0,'FREE',0, 12).
+teach(3,'_',1,2,e,0,'FREE',0, 12).
+
+
+teach(1,'First Tut',1,1,e,0,'Math',0, 13).
+teach(3,'_',1,2,e,0,'FREE',0,13).
+
+
+teach(3,'_',1,1,e,0,'FREE',0, 14).
+teach(1,'Second Tut',1,2,e,0,'Math',0,14).
+
+
