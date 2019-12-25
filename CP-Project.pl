@@ -20,39 +20,39 @@ compansate(DaysOff, SlotsDomain):-
     checkTutSlotConstraint(NewTeach, DaysOff),
     roomConstraint(AllTeach),
     staffConstraint(StaffMembers, AllTeach),
-    %write(Preferences),
     findTotalStaffCost(StaffMembers, Preferences, TutsToComp, StaffCost), 
-    write(StaffCost),
     findTotalTutCost(NewTeach, TutsToComp, TutGroupCost),
     Cost #= StaffCost + TutGroupCost,
-    
 
     %setof(teach(X,St,Group,Tut,Mj,Fy,Sb,Hall,Slots),(teach(X,St,Group,Tut,Mj,Fy,Sb,Hall,Slots), day(Slots,DX), element(_,DaysOff, DO), DX #\= DO, element(_,SlotsDomain,SD), DX #\= SD, X #= 3 ), FreeTeach),
     %append(AllTeach, FreeTeach, FinalTeach),
-
+    
     labeling([], SlotsDomain).
 % ==================================
-findTotalStaffCost([], _, _, _, 0):-!.
-findTotalStaffCost(_, [], _, _, 0):-!.
-findTotalStaffCost([Staff|S],[Prefrence|P], TutsComp, TotalCost) :-
-    write(Prefrence),
+findTotalStaffCost([], _, _, 0) :- !.
+findTotalStaffCost(_, [], _, 0) :- !.
+findTotalStaffCost([Staff|S],[[Prefrence]|P], TutsComp, TotalCost) :-
     getStaffCost(Prefrence, Staff, TutsComp, StaffCost),
-    findTotalStaffCost(S, P, TutsComp, SubCost), write(SubCost),
+    findTotalStaffCost(S, P, TutsComp, SubCost), 
     TotalCost #= SubCost + StaffCost.
 
 %Get The Cost Of Slots Being In The Staff Days Off. 
 getStaffCost(Preference, Staff, TutsComp, Cost) :-
-
     staff(Staff, _, StaffDaysOff,_),
-    
     getMemberSlots(Staff, TutsComp, StaffSlots),
     daysOffCost(StaffDaysOff, StaffSlots, StaffCost),
     
     prefrenceCost(Preference, StaffSlots, PrefrenceCost),
-    
-    
     Cost #= StaffCost + PrefrenceCost.
-    
+
+prefrenceCost(Preference, StaffSlots, Num) :-
+    maplist(inPreference(Preference), StaffSlots, Costs),
+    sum(Costs, #=, Num).
+
+inPreference(Preference, Slot, Cost) :-
+    day(Slot, SlotDay),
+    SlotDay #\= Preference #<==> Cost. 
+
 
 findTotalTutCost([], _, 0) :- !.
 findTotalTutCost([Teach|T], TutsToComp, TotalCost) :-
@@ -66,23 +66,11 @@ getTutGroupCost(Group, Tut, Major, TutGroupCost) :-
     getDaysOffTut(Group, Tut, Major, TutDaysOff),
     daysOffCost(TutDaysOff, TutGroupSlots, TutGroupCost).
 
-prefrenceCost([],_,0):-!.
-prefrenceCost(Preference, StaffSlots, Num) :-
-    write(Preference),
-    maplist(inPreference(Preference), StaffSlots, Costs),
-    sum(Costs, #=, Num).
-
-inPreference([],_,0).
-inPreference(Preference, Slot, Cost) :-
-    %write(Slot),
-    day(Slot, SlotDay),
-    SlotDay #\= Preference #<==> Cost. 
-
 daysOffCost(DaysOff, Slots, Num) :-
     maplist(isInDaysOff(DaysOff), Slots, Costs),
     sum(Costs, #=, Num).
 
-isInDaysOff(DaysOff, Slot, Cost):- 
+isInDaysOff(DaysOff, Slot, Cost):-
     element(_,DaysOff,DO),
     day(Slot, SlotDay),
     DO #= SlotDay #<==> Cost.
