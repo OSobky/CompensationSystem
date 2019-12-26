@@ -7,7 +7,7 @@
 %ava(LargeHalls, smallHalls, Rooms, Labs).
 
 % ==================================
-compansate(DaysOff, SlotsDomain):-
+compansate(DaysOff, SlotsDomain, Cost):-
     findCompTeach(DaysOff, TutsToComp),
     findall(Staff,staff(Staff,_,_,_), StaffMembers),
     findall(Preference,staff(_,_,_,Preference), Preferences),
@@ -26,7 +26,8 @@ compansate(DaysOff, SlotsDomain):-
 
     %setof(teach(X,St,Group,Tut,Mj,Fy,Sb,Hall,Slots),(teach(X,St,Group,Tut,Mj,Fy,Sb,Hall,Slots), day(Slots,DX), element(_,DaysOff, DO), DX #\= DO, element(_,SlotsDomain,SD), DX #\= SD, X #= 3 ), FreeTeach),
     %append(AllTeach, FreeTeach, FinalTeach),
-    
+
+    %append(SlotsDomain, [Cost], SlotsWithCost),
     labeling([], SlotsDomain).
 % ==================================
 findTotalStaffCost([], _, _, 0) :- !.

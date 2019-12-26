@@ -1,8 +1,8 @@
 ava(2,2,3,0).
 
-staff('First Tut',[0,1,2,3,4,5,10,13],[1,2,3,4],[1]).
-staff('Second Tut',[0,1,2,3,4,6,10,14],[1,2,3,4],[1]).
-staff('Third Tut',[11],[0,1,3,4,5],[1]).
+staff('First Tut',[0,1,2,3,4,5,10,13],[1,2,3,4],[5]).
+staff('Second Tut',[0,1,2,3,4,6,10,14],[1,2,3,4],[5]).
+staff('Third Tut',[11],[0,1,3,4,5],[2]).
 
 teach(1,'First Tut',1,1,e,0,'Math',0, 0).
 teach(1,'Second Tut',1,2,e,0,'Math',0,0).
